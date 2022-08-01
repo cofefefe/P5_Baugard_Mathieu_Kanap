@@ -86,7 +86,7 @@ function getProductsFromLocalStorage() {
     // convert all products to an array
     return JSON.parse(productsFromLocalStorage);
 }
-/ display Article existing in Local Storage
+// display Article existing in Local Storage
 function displayArticles(products, productsFromLocalStorageArray) {
     let articles = [];
 
@@ -106,4 +106,23 @@ function displayArticles(products, productsFromLocalStorageArray) {
     // update quantity
     managingQuantityByClient()
     return articles;
+}
+// Calculate and display Total price, for each change we'll call that function to update the price
+function displayTotalPrice(articles) {
+    let totalPrice = 0;
+    articles.forEach(function (article) {
+        const productFound = findProductById(article.id);
+        totalPrice += productFound.price * article.quantity;
+    });
+    document.getElementById("totalPrice").textContent = totalPrice
+}
+// take all product id from an array
+function findProductById(productId) {
+    let productFound;
+    productCollection.forEach(function (product) {
+        if (product._id === productId) {
+            productFound = product;
+        }
+    });
+    return productFound;
 }
