@@ -36,3 +36,29 @@ fetch('http://localhost:3000/api/products/' + productId)
             colors.appendChild(option);
         }
     });
+
+
+    let addToCartButton = document.getElementById("addToCart")
+
+    // Add the Id, quantity and color selected by client to the object " productToAddInLocalStorage "
+function addProductParam() {
+    addToCartButton.addEventListener("click", () => {
+
+    let quantitySelected = parseInt(document.getElementById("quantity").value);
+    let colorSelected = document.getElementById('colors').value
+    // define client's params
+    let productToAddInLocalStorage =
+    {
+        id: productId,
+        quantity: quantitySelected,
+        color: colorSelected
+    }
+
+    // add product to the local storage with their new params
+    addProductInLocalStorage(productToAddInLocalStorage);
+
+    // Redirect to the cart page after adding an item to ls
+    document.location.href = "cart.html";
+})
+}
+addProductParam()
