@@ -62,3 +62,44 @@ function addProductParam() {
 })
 }
 addProductParam()
+// make an array of the local storage, empty array if LS is empty, an object " products " is push if there's something in ls
+function getProductsFromLocalStorage() {
+    let products = localStorage.getItem("products")
+    if (products == null) {
+        return []
+    } else {
+        return JSON.parse(products);
+    }
+}
+
+// Add product selected by client to the Local Storage
+function addProductInLocalStorage(productToAddInLocalStorage) {
+    // take products already in LS
+    let products = getProductsFromLocalStorage();
+
+    // May this product is already existing in ls ?
+    let productKeyInLocalStorage = findProductKeyInLocalStorage(productToAddInLocalStorage, products);
+
+    // Update " products " with the new item, or adapt quantity if he's already existing in LS
+    if (productKeyInLocalStorage === null) {
+        products.push(productToAddInLocalStorage);
+    } else {
+        let productToUpdate = products[productKeyInLocalStorage];
+        productToUpdate.quantity += productToAddInLocalStorage.quantity;
+        products[productKeyInLocalStorage] = productToUpdate;
+    }
+
+    // Updating LS
+    localStorage.setItem('products', JSON.stringify(products));
+}
+// Search and compare display Product with product in local Storage
+function findProductKeyInLocalStorage(productToAddInLocalStorage, products) {
+    let productKeyFound = null;
+    // for each product in ls, generate key to target it
+    products.forEach(function (product, key) {
+        if (product.id === productToAddInLocalStorage.id && product.color === productToAddInLocalStorage.color) {
+            productKeyFound = key;
+        }
+    });
+    return productKeyFound;
+}
