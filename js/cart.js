@@ -52,3 +52,37 @@ function retrieveProductIds() {
     });
     return productIds;
 }
+// make the order : needed all product Id in local storage, and all personnal data from forms
+function submit(contact, productIds) {
+    let params = {
+        contact: contact,
+        products: productIds
+    }
+    // make a POST to send data id
+    fetch("http://localhost:3000/api/products/order", {
+        method: "POST",
+        headers: {'Content-Type': 'application/json; charset=utf-8'},
+        // stringiy all forms data
+        body: JSON.stringify(params),
+    }).then(function (stream) {
+        return stream.json();
+    }).then(function (response) {
+        // delete local storage after submit, and redirect client to confirmation
+        localStorage.removeItem('products');
+        document.location = "confirmation.html?orderId=" + response.orderId;
+    });
+}
+// show if client's local storage is empty
+function displayEmptyCollection(articles) {
+    if (articles.length === 0) {
+        const elemPanierVide = `<div style="display:flex; margin:auto; justify-content:center"><p style="font-size:40px; padding: 30px">Votre panier est vide</p></div>`;
+        const elem = document.querySelector("#cartAndFormContainer h1")
+        elem.insertAdjacentHTML("afterend", elemPanierVide)
+    }
+}
+// take products already existing in Local storage
+function getProductsFromLocalStorage() {
+    let productsFromLocalStorage = localStorage.getItem('products');
+    // convert all products to an array
+    return JSON.parse(productsFromLocalStorage);
+}
