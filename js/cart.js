@@ -172,3 +172,90 @@ function createArticle(product, quantity, color) {
 
     return newArticle
 }
+
+// Params regex
+let regexEmail = new RegExp('^[a-zA-Z0-9.-_]+[@]{1}[a-zA-Z0-9-_]+[.]{1}[a-z]{2,10}$')
+let regexName = new RegExp('^[a-zA-Z,.-]{2,20}$')
+let regexAddress = new RegExp("[0-9]{1,3}(?:(?:[,. ]){1}[-a-zA-Zàâäéèêëïîôöùûüç]+)+")
+
+
+// Email validation
+function clientEmailVerification(contact) {
+    let emailErrorMsg = document.getElementById("emailErrorMsg")
+    if (regexEmail.test(contact.email) === false) {
+        emailErrorMsg.textContent = 'Veuillez saisir une adresse Email valide';
+        return false;
+    } else {
+        emailErrorMsg.textContent = '';
+    }
+    return true;
+}
+
+// name validation
+function clientFirstNameVerification(contact) {
+    let firstNameErrorMsg = document.getElementById("firstNameErrorMsg")
+    if (regexName.test(contact.firstName) === false) {
+        firstNameErrorMsg.textContent = 'Veuillez saisir un prénom valide'
+        return false
+    } else {
+        firstNameErrorMsg.textContent = ''
+    }
+    return true
+}
+function clientLastNameVerification(contact) {
+    let lastNameErrorMsg = document.getElementById("lastNameErrorMsg")
+    if (regexName.test(contact.lastName) === false) {
+        lastNameErrorMsg.textContent = 'Veuillez saisir un nom valide'
+        return false
+    } else {
+        lastNameErrorMsg.textContent = ''
+    }
+    return true
+}
+
+// Address validation
+function clientAddressVerification(contact) {
+    let addressErrorMsg = document.getElementById("addressErrorMsg")
+    if (regexAddress.test(contact.address) === false) {
+        addressErrorMsg.textContent = 'Veuillez saisir une adresse valide'
+        return false
+    } else {
+        addressErrorMsg.textContent = ''
+    }
+    return true
+}
+
+// City validation
+function validateClientCity(contact) {
+    let cityErrorMsg = document.getElementById("cityErrorMsg");
+    if (regexName.test(contact.city) === false) {
+        cityErrorMsg.textContent = 'Veuillez saisir une ville valide'
+        return false
+    } else {
+        cityErrorMsg.textContent = ''
+    }
+    return true
+}
+
+// check if all form are valid thanks to regex
+function formIsValid(contact) {
+
+    let formIsValid = true;
+
+    if (!validateClientCity(contact)) {
+        formIsValid = false;
+    }
+    if (!clientAddressVerification(contact)) {
+        formIsValid = false;
+    }
+    if (!clientFirstNameVerification(contact)) {
+        formIsValid = false;
+    }
+    if (!clientLastNameVerification(contact)) {
+        formIsValid = false;
+    }
+    if (!clientEmailVerification(contact)) {
+        formIsValid = false;
+    }
+    return formIsValid;
+}
