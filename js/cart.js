@@ -86,3 +86,24 @@ function getProductsFromLocalStorage() {
     // convert all products to an array
     return JSON.parse(productsFromLocalStorage);
 }
+/ display Article existing in Local Storage
+function displayArticles(products, productsFromLocalStorageArray) {
+    let articles = [];
+
+    // for each product, make an article, and add params chosen by client
+    products.forEach(product => {
+        productsFromLocalStorageArray.forEach(localProduct => {
+            if (localProduct.id === product._id) {
+                sectionCartItemsEl.appendChild(createArticle(product, localProduct.quantity, localProduct.color))
+                articles.push(product);
+            }
+        });
+    });
+    // update the number of products
+    displayLengthArticles(productsFromLocalStorageArray)
+    // update deletion
+    deleteItemFromLocalStorage()
+    // update quantity
+    managingQuantityByClient()
+    return articles;
+}
