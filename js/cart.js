@@ -303,3 +303,40 @@ function managingQuantityByClient() {
         })
     }
 }
+// Deletion product by client
+function deleteItemFromLocalStorage() {
+    // take deletion button
+    let btnDeleteItemFromLocalStorage = document.querySelectorAll('.deleteItem')
+
+    // for each button :
+    btnDeleteItemFromLocalStorage.forEach(btn => {
+        // Listenening event client
+        btn.addEventListener("click", (e) => {
+            let articleEl = e.target.closest('article');
+            const productId = articleEl.dataset.id;
+            const color = articleEl.dataset.color;
+
+            // filter method to select individual product
+            // 1. Delete product from local storage
+            let productsFromLocalStorageArray = getProductsFromLocalStorage();
+            let productsFromLocalStorageArrayUpdated = productsFromLocalStorageArray.filter(product => {
+                if (productId === product.id && color === product.color) {
+                    return false
+                } else {
+                    return true;
+                }
+            });
+            localStorage.setItem("products", JSON.stringify(productsFromLocalStorageArrayUpdated));
+
+            // 2. delete element from the dom
+            articleEl.remove();
+
+            // 3. Display empty message if the collection is empty
+            displayEmptyCollection(productsFromLocalStorageArrayUpdated);
+
+            // 4. Refresh statistics
+            displayTotalPrice(productsFromLocalStorageArrayUpdated);
+            displayLengthArticles(productsFromLocalStorageArrayUpdated);
+        })
+    })
+}
