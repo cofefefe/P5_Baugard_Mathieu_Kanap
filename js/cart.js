@@ -42,3 +42,13 @@ getProducts().then(function (products) {
         submit(contact, productIds)
     })
 });
+// Push the product ID in an array "productIds" to use it for the purchase order
+function retrieveProductIds() {
+    let productIds = [];
+    let products = getProductsFromLocalStorage();
+
+    products.forEach(function (product) {
+        productIds.push(product.id);
+    });
+    return productIds;
+}
