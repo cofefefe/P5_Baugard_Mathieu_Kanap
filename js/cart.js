@@ -259,3 +259,47 @@ function formIsValid(contact) {
     }
     return formIsValid;
 }
+// display how many articles client chosen
+function displayLengthArticles(productsFromLocalStorageArray) {
+    let totalArticle = 0;
+    let LengthArticlesEl = document.getElementById('totalQuantity')
+    productsFromLocalStorageArray.forEach(function (product) {
+        totalArticle += product.quantity;
+
+    });
+    LengthArticlesEl.textContent = totalArticle;
+}
+
+// Managing quantity by client, in cart page
+function managingQuantityByClient() {
+    let btnClientManageQuantity = document.querySelectorAll(".itemQuantity");
+
+    for (let k = 0; k < btnClientManageQuantity.length; k++) {
+        let btnClientManageQuantity = document.querySelectorAll(".itemQuantity");
+        // event listener, if client is changing input's value :
+        btnClientManageQuantity[k].addEventListener("change", (event) => {
+            event.preventDefault();
+            let quantityEl = event.target;
+            let productEl = quantityEl.closest('article');
+
+            let productId = productEl.dataset.id;
+            let productColor = productEl.dataset.color;
+            let quantity = parseInt(quantityEl.value);
+
+            // change only the element chosen
+            let productsFromLocalStorageArray = getProductsFromLocalStorage();
+            // Search what product was modified
+            const productFromLocalStorage = productsFromLocalStorageArray.find((product) => {
+                return product.id === productId && product.color === productColor;
+            });
+
+            // Change quantity
+            productFromLocalStorage.quantity = quantity;
+            localStorage.setItem("products", JSON.stringify(productsFromLocalStorageArray));
+
+            // Refresh statistics
+            displayTotalPrice(productsFromLocalStorageArray);
+            displayLengthArticles(productsFromLocalStorageArray);
+        })
+    }
+}
