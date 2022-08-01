@@ -126,3 +126,49 @@ function findProductById(productId) {
     });
     return productFound;
 }
+// generate tree structure html
+function createArticle(product, quantity, color) {
+    let newArticle = document.createElement("article")
+    newArticle.classList.add("cart__item")
+    newArticle.dataset.id = product._id
+    newArticle.dataset.color = color
+
+    // Image
+    let imageContainer = newArticle.appendChild(document.createElement("div"))
+    imageContainer.classList.add("cart__item__img")
+    let image = imageContainer.appendChild(document.createElement("img"))
+    image.setAttribute('alt', product.altTxt)
+    image.setAttribute('src', product.imageUrl)
+
+    // Description
+    let cartItemContainer = newArticle.appendChild(document.createElement("div"))
+    cartItemContainer.classList.add("cart__item__content")
+    let cartItemDescription = cartItemContainer.appendChild(document.createElement("div"))
+    cartItemDescription.classList.add("cart__item__content__description")
+    cartItemDescription.textContent = product.description
+
+    // Settings
+    let cartItemContentSetting = cartItemContainer.appendChild(document.createElement("div"))
+    cartItemContentSetting.classList.add("cart__item__content__settings")
+
+    // input quantity and add default attribute
+    let cartItemQuantity = cartItemContentSetting.appendChild(document.createElement("div"))
+    cartItemQuantity.classList.add("cart__item__content__settings__quantity")
+    let quantitySettings = cartItemQuantity.appendChild(document.createElement("p"))
+    quantitySettings.textContent = "Qté :"
+    let quantityInput = cartItemQuantity.appendChild(document.createElement("input"))
+    quantityInput.classList.add("itemQuantity")
+    quantityInput.setAttribute('type', 'number')
+    quantityInput.setAttribute('name', 'itemQuantity')
+    quantityInput.setAttribute('min', '1')
+    quantityInput.setAttribute('max', '100')
+    quantityInput.setAttribute('value', quantity)
+
+    // add a button to delete product
+    let deleteItem = cartItemContentSetting.appendChild(document.createElement("button"))
+    deleteItem.classList.add("deleteItem")
+    deleteItem.setAttribute("id", "deleteItem")
+    deleteItem.textContent = "Supprimer"
+
+    return newArticle
+}
