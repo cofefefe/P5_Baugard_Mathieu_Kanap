@@ -190,7 +190,6 @@ function clientEmailVerification(contact) {
     }
     return true;
 }
-
 // name validation
 function clientFirstNameVerification(contact) {
     let firstNameErrorMsg = document.getElementById("firstNameErrorMsg")
@@ -212,7 +211,6 @@ function clientLastNameVerification(contact) {
     }
     return true
 }
-
 // Address validation
 function clientAddressVerification(contact) {
     let addressErrorMsg = document.getElementById("addressErrorMsg")
@@ -224,7 +222,6 @@ function clientAddressVerification(contact) {
     }
     return true
 }
-
 // City validation
 function validateClientCity(contact) {
     let cityErrorMsg = document.getElementById("cityErrorMsg");
@@ -236,7 +233,6 @@ function validateClientCity(contact) {
     }
     return true
 }
-
 // check if all form are valid thanks to regex
 function formIsValid(contact) {
 
