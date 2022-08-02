@@ -3,7 +3,6 @@ fetch('http://localhost:3000/api/products')
     .then((data) => {
         function creationIntegrationElement(){
             data.forEach(element  => {
-            console.log(element)
             // creation of all element of product card, add style to theses elements
             let a = document.createElement('a');
             let article = document.createElement('article');
@@ -34,4 +33,4 @@ fetch('http://localhost:3000/api/products')
         }
         // function's calling to create all visual element
         creationIntegrationElement()
-})
+}) 
