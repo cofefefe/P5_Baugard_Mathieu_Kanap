@@ -2,11 +2,36 @@
 let sectionCartItemsEl = document.getElementById('cart__items');
 let productCollection = [];
 
+// Push the product ID in an array "productIds" to use it for the purchase order
+function retrieveProductIds() {
+    let productIds = [];
+    let products = getProductsFromLocalStorage();
+
+    products.forEach(function (product) {
+        productIds.push(product.id);
+    });
+    return productIds;
+}
+// take products already existing in Local storage
+function getProductsFromLocalStorage() {
+    let productsFromLocalStorage = localStorage.getItem('products');
+    // convert all products to an array
+    return JSON.parse(productsFromLocalStorage);
+}
 function getProducts() {
     // calling API to take params we needed ( quantity, color )
     return fetch('http://localhost:3000/api/products/').then(res => res.json());
 }
-
+// take all product id from an array
+function findProductById(productId) {
+    let productFound;
+    productCollection.forEach(function (product) {
+        if (product._id === productId) {
+            productFound = product;
+        }
+    });
+    return productFound;
+}
 // use promises of the previous calling to :
 getProducts().then(function (products) {
     productCollection = products;
@@ -42,16 +67,7 @@ getProducts().then(function (products) {
         submit(contact, productIds)
     })
 });
-// Push the product ID in an array "productIds" to use it for the purchase order
-function retrieveProductIds() {
-    let productIds = [];
-    let products = getProductsFromLocalStorage();
 
-    products.forEach(function (product) {
-        productIds.push(product.id);
-    });
-    return productIds;
-}
 // make the order : needed all product Id in local storage, and all personnal data from forms
 function submit(contact, productIds) {
     let params = {
@@ -80,12 +96,7 @@ function displayEmptyCollection(articles) {
         elem.insertAdjacentHTML("afterend", elemPanierVide)
     }
 }
-// take products already existing in Local storage
-function getProductsFromLocalStorage() {
-    let productsFromLocalStorage = localStorage.getItem('products');
-    // convert all products to an array
-    return JSON.parse(productsFromLocalStorage);
-}
+
 // display Article existing in Local Storage
 function displayArticles(products, productsFromLocalStorageArray) {
     let articles = [];
@@ -116,16 +127,17 @@ function displayTotalPrice(articles) {
     });
     document.getElementById("totalPrice").textContent = totalPrice
 }
-// take all product id from an array
-function findProductById(productId) {
-    let productFound;
-    productCollection.forEach(function (product) {
-        if (product._id === productId) {
-            productFound = product;
-        }
+// display how many articles client chosen
+function displayLengthArticles(productsFromLocalStorageArray) {
+    let totalArticle = 0;
+    let LengthArticlesEl = document.getElementById('totalQuantity')
+    productsFromLocalStorageArray.forEach(function (product) {
+        totalArticle += product.quantity;
+
     });
-    return productFound;
+    LengthArticlesEl.textContent = totalArticle;
 }
+
 // generate tree structure html
 function createArticle(product, quantity, color) {
     let newArticle = document.createElement("article")
@@ -172,7 +184,76 @@ function createArticle(product, quantity, color) {
 
     return newArticle
 }
+// Managing quantity by client, in cart page
+function managingQuantityByClient() {
+    let btnClientManageQuantity = document.querySelectorAll(".itemQuantity");
 
+    for (let k = 0; k < btnClientManageQuantity.length; k++) {
+        let btnClientManageQuantity = document.querySelectorAll(".itemQuantity");
+        // event listener, if client is changing input's value :
+        btnClientManageQuantity[k].addEventListener("change", (event) => {
+            event.preventDefault();
+            let quantityEl = event.target;
+            let productEl = quantityEl.closest('article');
+
+            let productId = productEl.dataset.id;
+            let productColor = productEl.dataset.color;
+            let quantity = parseInt(quantityEl.value);
+
+            // change only the element chosen
+            let productsFromLocalStorageArray = getProductsFromLocalStorage();
+            // Search what product was modified
+            const productFromLocalStorage = productsFromLocalStorageArray.find((product) => {
+                return product.id === productId && product.color === productColor;
+            });
+
+            // Change quantity
+            productFromLocalStorage.quantity = quantity;
+            localStorage.setItem("products", JSON.stringify(productsFromLocalStorageArray));
+
+            // Refresh statistics
+            displayTotalPrice(productsFromLocalStorageArray);
+            displayLengthArticles(productsFromLocalStorageArray);
+        })
+    }
+}
+// Deletion product by client
+function deleteItemFromLocalStorage() {
+    // take deletion button
+    let btnDeleteItemFromLocalStorage = document.querySelectorAll('.deleteItem')
+
+    // for each button :
+    btnDeleteItemFromLocalStorage.forEach(btn => {
+        // Listenening event client
+        btn.addEventListener("click", (e) => {
+            let articleEl = e.target.closest('article');
+            const productId = articleEl.dataset.id;
+            const color = articleEl.dataset.color;
+
+            // filter method to select individual product
+            // 1. Delete product from local storage
+            let productsFromLocalStorageArray = getProductsFromLocalStorage();
+            let productsFromLocalStorageArrayUpdated = productsFromLocalStorageArray.filter(product => {
+                if (productId === product.id && color === product.color) {
+                    return false
+                } else {
+                    return true;
+                }
+            });
+            localStorage.setItem("products", JSON.stringify(productsFromLocalStorageArrayUpdated));
+
+            // 2. delete element from the dom
+            articleEl.remove();
+
+            // 3. Display empty message if the collection is empty
+            displayEmptyCollection(productsFromLocalStorageArrayUpdated);
+
+            // 4. Refresh statistics
+            displayTotalPrice(productsFromLocalStorageArrayUpdated);
+            displayLengthArticles(productsFromLocalStorageArrayUpdated);
+        })
+    })
+}
 // Params regex
 let regexEmail = new RegExp('^[a-zA-Z0-9.-_]+[@]{1}[a-zA-Z0-9-_]+[.]{1}[a-z]{2,10}$')
 let regexName = new RegExp('^[a-zA-Z,.-]{2,20}$')
@@ -254,85 +335,4 @@ function formIsValid(contact) {
         formIsValid = false;
     }
     return formIsValid;
-}
-// display how many articles client chosen
-function displayLengthArticles(productsFromLocalStorageArray) {
-    let totalArticle = 0;
-    let LengthArticlesEl = document.getElementById('totalQuantity')
-    productsFromLocalStorageArray.forEach(function (product) {
-        totalArticle += product.quantity;
-
-    });
-    LengthArticlesEl.textContent = totalArticle;
-}
-
-// Managing quantity by client, in cart page
-function managingQuantityByClient() {
-    let btnClientManageQuantity = document.querySelectorAll(".itemQuantity");
-
-    for (let k = 0; k < btnClientManageQuantity.length; k++) {
-        let btnClientManageQuantity = document.querySelectorAll(".itemQuantity");
-        // event listener, if client is changing input's value :
-        btnClientManageQuantity[k].addEventListener("change", (event) => {
-            event.preventDefault();
-            let quantityEl = event.target;
-            let productEl = quantityEl.closest('article');
-
-            let productId = productEl.dataset.id;
-            let productColor = productEl.dataset.color;
-            let quantity = parseInt(quantityEl.value);
-
-            // change only the element chosen
-            let productsFromLocalStorageArray = getProductsFromLocalStorage();
-            // Search what product was modified
-            const productFromLocalStorage = productsFromLocalStorageArray.find((product) => {
-                return product.id === productId && product.color === productColor;
-            });
-
-            // Change quantity
-            productFromLocalStorage.quantity = quantity;
-            localStorage.setItem("products", JSON.stringify(productsFromLocalStorageArray));
-
-            // Refresh statistics
-            displayTotalPrice(productsFromLocalStorageArray);
-            displayLengthArticles(productsFromLocalStorageArray);
-        })
-    }
-}
-// Deletion product by client
-function deleteItemFromLocalStorage() {
-    // take deletion button
-    let btnDeleteItemFromLocalStorage = document.querySelectorAll('.deleteItem')
-
-    // for each button :
-    btnDeleteItemFromLocalStorage.forEach(btn => {
-        // Listenening event client
-        btn.addEventListener("click", (e) => {
-            let articleEl = e.target.closest('article');
-            const productId = articleEl.dataset.id;
-            const color = articleEl.dataset.color;
-
-            // filter method to select individual product
-            // 1. Delete product from local storage
-            let productsFromLocalStorageArray = getProductsFromLocalStorage();
-            let productsFromLocalStorageArrayUpdated = productsFromLocalStorageArray.filter(product => {
-                if (productId === product.id && color === product.color) {
-                    return false
-                } else {
-                    return true;
-                }
-            });
-            localStorage.setItem("products", JSON.stringify(productsFromLocalStorageArrayUpdated));
-
-            // 2. delete element from the dom
-            articleEl.remove();
-
-            // 3. Display empty message if the collection is empty
-            displayEmptyCollection(productsFromLocalStorageArrayUpdated);
-
-            // 4. Refresh statistics
-            displayTotalPrice(productsFromLocalStorageArrayUpdated);
-            displayLengthArticles(productsFromLocalStorageArrayUpdated);
-        })
-    })
 }

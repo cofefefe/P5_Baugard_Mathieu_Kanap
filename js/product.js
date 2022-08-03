@@ -38,30 +38,8 @@ fetch('http://localhost:3000/api/products/' + productId)
     });
 
 
-    let addToCartButton = document.getElementById("addToCart")
+let addToCartButton = document.getElementById("addToCart")
 
-    // Add the Id, quantity and color selected by client to the object " productToAddInLocalStorage "
-function addProductParam() {
-    addToCartButton.addEventListener("click", () => {
-
-    let quantitySelected = parseInt(document.getElementById("quantity").value);
-    let colorSelected = document.getElementById('colors').value
-    // define client's params
-    let productToAddInLocalStorage =
-    {
-        id: productId,
-        quantity: quantitySelected,
-        color: colorSelected
-    }
-
-    // add product to the local storage with their new params
-    addProductInLocalStorage(productToAddInLocalStorage);
-
-    // Redirect to the cart page after adding an item to ls
-    document.location.href = "cart.html";
-})
-}
-addProductParam()
 // make an array of the local storage, empty array if LS is empty, an object " products " is push if there's something in ls
 function getProductsFromLocalStorage() {
     let products = localStorage.getItem("products")
@@ -70,6 +48,17 @@ function getProductsFromLocalStorage() {
     } else {
         return JSON.parse(products);
     }
+}
+// Search and compare display Product with product in local Storage
+function findProductKeyInLocalStorage(productToAddInLocalStorage, products) {
+    let productKeyFound = null;
+    // for each product in ls, generate key to target it
+    products.forEach(function (product, key) {
+        if (product.id === productToAddInLocalStorage.id && product.color === productToAddInLocalStorage.color) {
+            productKeyFound = key;
+        }
+    });
+    return productKeyFound;
 }
 
 // Add product selected by client to the Local Storage
@@ -92,14 +81,26 @@ function addProductInLocalStorage(productToAddInLocalStorage) {
     // Updating LS
     localStorage.setItem('products', JSON.stringify(products));
 }
-// Search and compare display Product with product in local Storage
-function findProductKeyInLocalStorage(productToAddInLocalStorage, products) {
-    let productKeyFound = null;
-    // for each product in ls, generate key to target it
-    products.forEach(function (product, key) {
-        if (product.id === productToAddInLocalStorage.id && product.color === productToAddInLocalStorage.color) {
-            productKeyFound = key;
+    // Add the Id, quantity and color selected by client to the object " productToAddInLocalStorage "
+function addProductParam() {
+    addToCartButton.addEventListener("click", () => {
+
+    let quantitySelected = parseInt(document.getElementById("quantity").value);
+    let colorSelected = document.getElementById('colors').value
+    // define client's params
+    let productToAddInLocalStorage =
+        {
+        id: productId,
+        quantity: quantitySelected,
+        color: colorSelected
         }
-    });
-    return productKeyFound;
+
+    // add product to the local storage with their new params
+    addProductInLocalStorage(productToAddInLocalStorage);
+
+    // Redirect to the cart page after adding an item to ls
+    document.location.href = "cart.html";
+    })
 }
+addProductParam()
+    
