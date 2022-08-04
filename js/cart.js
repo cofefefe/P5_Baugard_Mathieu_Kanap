@@ -1,7 +1,7 @@
 // place to display products in cart page
 let sectionCartItemsEl = document.getElementById('cart__items');
 let productCollection = [];
-
+//***** Managing datas, retrieve all product from ls, IDs, use promise *****//
 // Push the product ID in an array "productIds" to use it for the purchase order
 function retrieveProductIds() {
     let productIds = [];
@@ -88,6 +88,7 @@ function submit(contact, productIds) {
         document.location = "confirmation.html?orderId=" + response.orderId;
     });
 }
+//***** Managing display *****//
 // show if client's local storage is empty
 function displayEmptyCollection(articles) {
     if (articles.length === 0) {
@@ -96,7 +97,6 @@ function displayEmptyCollection(articles) {
         elem.insertAdjacentHTML("afterend", elemPanierVide)
     }
 }
-
 // display Article existing in Local Storage
 function displayArticles(products, productsFromLocalStorageArray) {
     let articles = [];
@@ -137,7 +137,6 @@ function displayLengthArticles(productsFromLocalStorageArray) {
     });
     LengthArticlesEl.textContent = totalArticle;
 }
-
 // generate tree structure html
 function createArticle(product, quantity, color) {
     let newArticle = document.createElement("article")
@@ -184,6 +183,7 @@ function createArticle(product, quantity, color) {
 
     return newArticle
 }
+//***** Managing local storage's data by user *****//
 // Managing quantity by client, in cart page
 function managingQuantityByClient() {
     let btnClientManageQuantity = document.querySelectorAll(".itemQuantity");
@@ -254,12 +254,11 @@ function deleteItemFromLocalStorage() {
         })
     })
 }
+//***** Handling data forms *****//
 // Params regex
 let regexEmail = new RegExp('^[a-zA-Z0-9.-_]+[@]{1}[a-zA-Z0-9-_]+[.]{1}[a-z]{2,10}$')
 let regexName = new RegExp('^[a-zA-Z,.-]{2,20}$')
 let regexAddress = new RegExp("[0-9]{1,3}(?:(?:[,. ]){1}[-a-zA-Zàâäéèêëïîôöùûüç]+)+")
-
-
 // Email validation
 function clientEmailVerification(contact) {
     let emailErrorMsg = document.getElementById("emailErrorMsg")
