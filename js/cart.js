@@ -62,9 +62,15 @@ getProducts().then(function (products) {
         if (!formIsValid(contact)) {
             return;
         }
-
+        let quantity = document.querySelector('.itemQuantity')
+        console.log(quantity.value)
         // make request to submit order
-        submit(contact, productIds)
+        if(quantity.value > 0){
+            submit(contact, productIds)
+        }
+        if(quantity.value < 0){
+            alert('La quantité ne peut comprendre des valeurs négatives')
+        }
     })
 });
 
@@ -74,6 +80,7 @@ function submit(contact, productIds) {
         contact: contact,
         products: productIds
     }
+    
     // make a POST to send data id
     fetch("http://localhost:3000/api/products/order", {
         method: "POST",
@@ -156,12 +163,16 @@ function createArticle(product, quantity, color) {
     cartItemContainer.classList.add("cart__item__content")
     let cartItemDescription = cartItemContainer.appendChild(document.createElement("div"))
     cartItemDescription.classList.add("cart__item__content__description")
-    cartItemDescription.textContent = product.description
-
+    cartItemDescription.textContent = product.name
+    let description = document.createElement("div")
+    cartItemDescription.appendChild(description)
+    description.textContent = product.description
+    
     // Settings
     let cartItemContentSetting = cartItemContainer.appendChild(document.createElement("div"))
     cartItemContentSetting.classList.add("cart__item__content__settings")
-
+    cartItemContentSetting.textContent = product.price + '€' 
+  
     // input quantity and add default attribute
     let cartItemQuantity = cartItemContentSetting.appendChild(document.createElement("div"))
     cartItemQuantity.classList.add("cart__item__content__settings__quantity")
@@ -174,6 +185,7 @@ function createArticle(product, quantity, color) {
     quantityInput.setAttribute('min', '1')
     quantityInput.setAttribute('max', '100')
     quantityInput.setAttribute('value', quantity)
+    
 
     // add a button to delete product
     let deleteItem = cartItemContentSetting.appendChild(document.createElement("button"))
@@ -206,7 +218,12 @@ function managingQuantityByClient() {
             const productFromLocalStorage = productsFromLocalStorageArray.find((product) => {
                 return product.id === productId && product.color === productColor;
             });
-
+            
+            if(quantity < 0){
+                
+                alert('La quantité ne peut accepter des valeurs négatives')
+                
+            }
             // Change quantity
             productFromLocalStorage.quantity = quantity;
             localStorage.setItem("products", JSON.stringify(productsFromLocalStorageArray));

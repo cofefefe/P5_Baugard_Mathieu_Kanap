@@ -74,8 +74,8 @@ function areFormDataValid(productToAddInLocalStorage) {
         return false;
     }
 
-    if (!productToAddInLocalStorage.quantity > 0) {
-        alert('Mauvaise quantité');
+    if (productToAddInLocalStorage.quantity < 0) {
+        alert('La quantité ne peut accepter des valeurs négatives');
         return false;
     }
 
