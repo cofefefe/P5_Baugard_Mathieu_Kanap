@@ -166,7 +166,7 @@ function createArticle(product, quantity, color) {
     cartItemDescription.textContent = product.name
     let description = document.createElement("div")
     cartItemDescription.appendChild(description)
-    description.textContent = product.description
+    description.textContent = color
     
     // Settings
     let cartItemContentSetting = cartItemContainer.appendChild(document.createElement("div"))
