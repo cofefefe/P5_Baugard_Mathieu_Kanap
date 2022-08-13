@@ -71,6 +71,9 @@ getProducts().then(function (products) {
         if(quantity.value < 0){
             alert('La quantité ne peut comprendre des valeurs négatives')
         }
+        if(quantity.value == 0 ){
+            alert('La quantité ne peut comprendre des valeurs nulles')
+        }
     })
 });
 
@@ -158,7 +161,7 @@ function createArticle(product, quantity, color) {
     image.setAttribute('alt', product.altTxt)
     image.setAttribute('src', product.imageUrl)
 
-    // Description
+    // couleur
     let cartItemContainer = newArticle.appendChild(document.createElement("div"))
     cartItemContainer.classList.add("cart__item__content")
     let cartItemDescription = cartItemContainer.appendChild(document.createElement("div"))
