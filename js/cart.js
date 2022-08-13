@@ -64,7 +64,7 @@ getProducts().then(function (products) {
         }
         let quantity = document.querySelector('.itemQuantity')
         console.log(quantity.value)
-        // make request to submit order
+        // make request to submit order if quantity is correct
         if(quantity.value > 0){
             submit(contact, productIds)
         }
